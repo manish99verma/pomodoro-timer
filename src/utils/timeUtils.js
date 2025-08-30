@@ -23,6 +23,7 @@ export const formatDateToISODate = (time) => {
 export const getFocusTimeOfOnDate = (dailyFocusTime, day) => {
   const todayInISO = formatDateToISODate(day);
   const result = dailyFocusTime?.filter((item) => item.day === todayInISO);
+  if (!result || !result.length) return 0;
   return result[0].focusTime ?? 0;
 };
 
@@ -33,8 +34,34 @@ export const convertSecondsToHrs = (timeInSecs) => {
 };
 
 // Convert to hours and minutes
-export const convertToHoursAndMinutes = (timeInSeconds) => {
+export const convertToHoursMinutesSeconds = (timeInSeconds) => {
+  const seconds = timeInSeconds % 60;
   const timeInHours = timeInSeconds / 3600;
   const timeInMinutes = Math.floor(timeInSeconds / 60) % 60;
-  return { hours: Math.floor(timeInHours), minutes: Math.floor(timeInMinutes) };
+  return {
+    hours: Math.floor(timeInHours),
+    minutes: Math.floor(timeInMinutes),
+    seconds: seconds,
+  };
+};
+
+// convert Seconds to 00:00:00
+export const formatTime = (timeInSeconds) => {
+  const hrs = String(Math.floor(timeInSeconds / 3600)).padStart(2, "0");
+  const mins = String(Math.floor((timeInSeconds % 3600) / 60)).padStart(2, "0");
+  const secs = String(timeInSeconds % 60).padStart(2, "0");
+
+  if (timeInSeconds === 0) {
+    return "00:00";
+  }
+
+  if (timeInSeconds < 60) return timeInSeconds;
+  if (timeInSeconds < 3600) return mins + ":" + secs;
+  return hrs + ":" + mins + ":" + secs;
+};
+
+// how much percent is a of b
+export const getPercentage = (a, b) => {
+  if (b === 0) return 100;
+  return Math.floor((a * 100) / b);
 };

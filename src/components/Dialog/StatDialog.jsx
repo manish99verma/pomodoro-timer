@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import BaseDialog from "./BaseDialog";
-import { convertToHoursAndMinutes } from "../../utils/timeUtils";
+import { convertToHoursMinutesSeconds } from "../../utils/timeUtils";
 
 const StatDialog = ({ onDismiss }) => {
   const data = useSelector((state) => state.dailyFocusTime);
@@ -10,7 +10,7 @@ const StatDialog = ({ onDismiss }) => {
   };
 
   const timeInHrsAndMinutes = (timeInSeconds) => {
-    const minutesAndHours = convertToHoursAndMinutes(timeInSeconds);
+    const minutesAndHours = convertToHoursMinutesSeconds(timeInSeconds);
     if (minutesAndHours.hours > 0)
       return `${minutesAndHours.hours} hours ${minutesAndHours.minutes} min`;
     if (minutesAndHours.minutes > 0) return `${minutesAndHours.minutes} min`;

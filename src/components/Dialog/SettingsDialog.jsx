@@ -92,15 +92,17 @@ const SettingsDialog = ({ onDismiss, onStart }) => {
                 setPreferences({ ...preferences, longBreakOnSessions: item })
               }
             />
-            <TimeSelector
-              title="Long Break Duration"
-              unitName="min"
-              selectorsList={focusAndTimeSelectors}
-              selectedValue={preferences.longBreakDuration}
-              onSelect={(item) =>
-                setPreferences({ ...preferences, longBreakDuration: item })
-              }
-            />
+            {preferences.longBreakOnSessions > 0 && (
+              <TimeSelector
+                title="Long Break Duration"
+                unitName="min"
+                selectorsList={focusAndTimeSelectors}
+                selectedValue={preferences.longBreakDuration}
+                onSelect={(item) =>
+                  setPreferences({ ...preferences, longBreakDuration: item })
+                }
+              />
+            )}
             <LabelSelector
               selectedValue={preferences.label}
               selectorsList={sortedLabels()}

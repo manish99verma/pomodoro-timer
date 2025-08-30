@@ -2,32 +2,41 @@ import { useState } from "react";
 import Button from "./Button";
 import SettingsDialog from "./Dialog/SettingsDialog";
 
-const Controls = () => {
-  const [isRunning, setIsRunning] = useState(false);
+const Controls = ({
+  timerStarted,
+  onStartTimer,
+  toggleTimer,
+  isPaused,
+  onSkipSession,
+  onAbort,
+}) => {
   const [settingsDialogOpened, setSettingsDialogOpened] = useState(false);
 
   const handleStart = (preferences) => {
-    console.log("Start with: ", preferences);
     setSettingsDialogOpened(false);
-    setIsRunning(true);
+    onStartTimer(preferences);
+  };
+
+  const handleToggleTimer = () => {
+    toggleTimer();
   };
 
   return (
     <>
       <div className="flex gap-5">
-        {isRunning ? (
+        {timerStarted ? (
           <>
-            <Button variant="outline" onClick={() => setIsRunning((b) => !b)}>
+            <Button variant="outline" onClick={onAbort}>
               Abort
             </Button>
             <Button
-              variant="secondary"
+              variant={isPaused ? "primary" : "secondary"}
               size="lg"
-              onClick={() => setIsRunning((b) => !b)}
+              onClick={handleToggleTimer}
             >
-              Pause
+              {isPaused ? "Resume" : "Pause"}
             </Button>
-            <Button variant="outline" onClick={() => setIsRunning((b) => !b)}>
+            <Button variant="outline" onClick={onSkipSession}>
               Skip
             </Button>
           </>
