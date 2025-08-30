@@ -2,41 +2,49 @@ import { useState } from "react";
 import Button from "./Button";
 import SettingsDialog from "./Dialog/SettingsDialog";
 
-const Controls = ({
-  timerStarted,
-  onStartTimer,
-  toggleTimer,
-  isPaused,
-  onSkipSession,
-  onAbort,
-}) => {
+const Controls = ({ timer, onStartNewTimer, onTimerAborted }) => {
   const [settingsDialogOpened, setSettingsDialogOpened] = useState(false);
 
-  const handleStart = (preferences) => {
-    setSettingsDialogOpened(false);
-    onStartTimer(preferences);
+  const handleSkipSession = () => {
+    timer?.skipSession();
   };
 
-  const handleToggleTimer = () => {
-    toggleTimer();
+  const handleToggle = () => {
+    if (!timer) return;
+
+    if (timer.isRunning()) {
+      timer.stop();
+    } else {
+      timer.start();
+    }
+  };
+
+  const handleStart = (pref) => {
+    onStartNewTimer(pref);
+    setSettingsDialogOpened(false);
+  };
+
+  const handleAbort = () => {
+    timer?.abort();
+    onTimerAborted();
   };
 
   return (
     <>
       <div className="flex gap-5">
-        {timerStarted ? (
+        {timer ? (
           <>
-            <Button variant="outline" onClick={onAbort}>
+            <Button variant="outline" onClick={handleAbort}>
               Abort
             </Button>
             <Button
-              variant={isPaused ? "primary" : "secondary"}
+              variant={timer?.isRunning() ? "secondary" : "primary"}
               size="lg"
-              onClick={handleToggleTimer}
+              onClick={handleToggle}
             >
-              {isPaused ? "Resume" : "Pause"}
+              {timer?.isRunning() ? "Pause" : "Resume"}
             </Button>
-            <Button variant="outline" onClick={onSkipSession}>
+            <Button variant="outline" onClick={handleSkipSession}>
               Skip
             </Button>
           </>

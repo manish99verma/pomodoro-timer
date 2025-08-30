@@ -13,6 +13,23 @@ class Timer {
     this.completedBreaks = timerPreferences.completedBreaks || 0;
     this.completedLongBreaks = timerPreferences.completedLongBreaks || 0;
     this.onGoingTimerStateInSeconds = timerPreferences.onGoingTimerState || 0;
+    this.isAborted = timerPreferences.isAborted || false;
+  }
+
+  getSerializedTimer() {
+    return {
+      work: this.work,
+      break: this.break,
+      sessions: this.sessions,
+      longBreakOnSessions: this.longBreakOnSessions,
+      longBreakDuration: this.longBreakDuration,
+      label: this.label,
+      completedSessions: this.completedSessions,
+      completedBreaks: this.completedBreaks,
+      completedLongBreaks: this.completedLongBreaks,
+      onGoingTimerStateInSeconds: this.onGoingTimerStateInSeconds,
+      isAborted: this.isAborted,
+    };
   }
 
   onTimerUpdateListener(listener) {
@@ -39,10 +56,13 @@ class Timer {
     }
   }
 
-  abort() {}
+  abort() {
+    this.isAborted = true;
+    this.stop();
+  }
 
   start() {
-    if (this.currJobId) return;
+    if (this.currJobId || this.isAborted) return;
 
     this.currJobId = setInterval(() => {
       this.onGoingTimerStateInSeconds++;
@@ -127,6 +147,7 @@ class Timer {
   }
 
   formattedTimerState() {
+    if (this.isAborted) return "Aborted";
     if (this.isCompleted()) return "Completed";
 
     if (this.isFocusTime()) {

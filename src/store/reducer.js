@@ -1,5 +1,6 @@
 import {
   ADD_LABEL,
+  SAVE_ON_GOING_TIMER,
   SAVE_TIMER_PREFERENCES,
   TOGGLE_SOUND,
   TOGGLE_THEME,
@@ -18,7 +19,7 @@ const fallBackState = {
     longBreakDuration: 15,
     label: "Unlabelled",
   },
-  currTimerPreferences: {
+  onGoingTimer: {
     work: 25,
     break: 5,
     sessions: 5,
@@ -28,7 +29,8 @@ const fallBackState = {
     completedSessions: 0,
     completedBreaks: 0,
     completedLongBreaks: 0,
-    onGoingTimerState: 0,
+    onGoingTimerStateInSeconds: 0,
+    isAborted: false,
   },
   // {day: "YYYY-MM-DD", focusTime: timeInSeconds};
   dailyFocusTime: [
@@ -66,6 +68,9 @@ const reducer = (state = currState, action) => {
         ...state,
         timerPreferences: { ...action.payload },
       };
+    case SAVE_ON_GOING_TIMER: {
+      return { ...state, onGoingTimer: action.payload };
+    }
     default:
       return state;
   }

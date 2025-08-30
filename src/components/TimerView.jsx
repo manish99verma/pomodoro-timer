@@ -1,19 +1,19 @@
 import { MdOutlineVisibility, MdCoffee } from "react-icons/md";
 import { formatTime, getPercentage } from "../utils/timeUtils";
 
-const TimerView = ({ isFocusTime, timeLeft, currSessionDuration }) => {
+const TimerView = ({ timer }) => {
   return (
     <div className="relative flex flex-col gap-5 w-64 h-64 rounded-full items-center justify-center">
-      {isFocusTime ? (
+      {timer?.isFocusTime() ? (
         <MdOutlineVisibility className="w-6 h-6 opacity-80" />
       ) : (
         <MdCoffee className="w-6 h-6 opacity-80" />
       )}
       <div className="font-bold text-4xl tracking-widest">
-        {formatTime(timeLeft)}
+        {formatTime(timer?.getCurrentSessionTimeLeftInSeconds() || 0)}
       </div>
       <div className="opacity-80 font-light">
-        {isFocusTime ? "Focus" : "Chill"}
+        {timer?.isFocusTime() ? "Focus" : "Chill"}
       </div>
 
       <svg
@@ -39,7 +39,13 @@ const TimerView = ({ isFocusTime, timeLeft, currSessionDuration }) => {
           className="stroke-current text-orange-600"
           strokeWidth="2"
           strokeDasharray="100"
-          strokeDashoffset={100 - getPercentage(timeLeft, currSessionDuration)}
+          strokeDashoffset={
+            100 -
+            getPercentage(
+              timer?.getCurrentSessionTimeLeftInSeconds() || 0,
+              timer?.getCurrentJobDurationInSeconds() || 0
+            )
+          }
           strokeLinecap="round"
         ></circle>
       </svg>

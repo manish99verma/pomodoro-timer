@@ -1,76 +1,84 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import TimeInfo from "./components/TimeInfo";
 import Preferences from "./components/Preferences";
 import TimerView from "./components/TimerView";
 import Controls from "./components/Controls";
 import StatsButton from "./components/StatsButton";
 import Timer from "./utils/Timer";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TimerFinishedDialog from "./components/Dialog/TimerFinishedDialog";
+import { saveOnGoingTimer } from "./store/actions";
 
 const App = () => {
+  const dispatch = useDispatch();
+  const savedTimerInfo = useSelector((state) => state.onGoingTimer);
   const darkMode = useSelector((state) => state.darkMode);
   const [formattedTimerState, setFormattedTimerState] =
     useState("Sessions 0/0");
+  const [_, setUpdatesCount] = useState(0);
   const [timer, setTimer] = useState(null);
-  const [isPaused, setIsPaused] = useState(true);
-  const [isFocusTime, setIsFocusTime] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(0);
-  const [currSessionDuration, setCurrSessionDuration] = useState(0);
-  const [isCompleted, setIsCompleted] = useState(true);
   const [congratulationDialogVisible, setCongratulationDialogVisible] =
     useState(false);
 
+  // updates
+  useEffect(() => {
+    if (!timer) return;
+    timer.onTimerUpdateListener(() => {
+      setUpdatesCount((c) => c + 1);
+
+      setFormattedTimerState(timer.formattedTimerState());
+
+      if (timer.isCompleted()) {
+        setCongratulationDialogVisible(true);
+        setTimer(null);
+      }
+
+      const serializedTimer = timer.getSerializedTimer();
+      console.log("serialized timer obj: ", serializedTimer);
+      dispatch(saveOnGoingTimer(serializedTimer));
+    });
+  }, [timer, dispatch]);
+
+  useEffect(() => {
+    console.log("Saved info: ", savedTimerInfo);
+    const t = new Timer(savedTimerInfo);
+    if (t.isCompleted() || t.isAborted) {
+      return;
+    }
+
+    // resume timer from last session
+    setTimer(t);
+  }, [savedTimerInfo]);
+
   const updateViewFromTimer = (t) => {
-    console.log("timer obj: ", t);
+    setUpdatesCount((c) => c + 1);
 
     setFormattedTimerState(t.formattedTimerState());
-    setIsPaused(!t.isRunning());
-    setTimeLeft(t.getCurrentSessionTimeLeftInSeconds());
-    setCurrSessionDuration(t.getCurrentJobDurationInSeconds());
-    setIsFocusTime(t.isFocusTime());
 
     if (t.isCompleted()) {
-      setIsCompleted(true);
       setCongratulationDialogVisible(true);
       setTimer(null);
-    } else {
-      setIsCompleted(false);
     }
+
+    const serializedTimer = t.getSerializedTimer();
+    console.log("serialized timer obj: ", serializedTimer);
+    dispatch(saveOnGoingTimer(serializedTimer));
   };
 
   const startNewTimer = (preferences) => {
     const t = new Timer(preferences);
     t.start();
 
-    updateViewFromTimer(t);
+    // updateViewFromTimer(t);
 
-    t.onTimerUpdateListener(() => {
-      updateViewFromTimer(t);
-    });
+    // t.onTimerUpdateListener(() => {
+    //   updateViewFromTimer(t);
+    // });
 
     setTimer(t);
   };
 
-  const handleToggleTimer = () => {
-    if (!timer) return;
-
-    if (timer.isRunning()) {
-      timer.stop();
-    } else {
-      timer.start();
-    }
-  };
-
-  const handleSkipSession = () => {
-    timer?.skipSession();
-  };
-
-  const handleAbort = () => {
-    console.log("Aborting timer");
-
-    setIsCompleted(true);
-    timer?.stop();
+  const onTimerAborted = () => {
     setTimer(null);
   };
 
@@ -99,20 +107,13 @@ const App = () => {
             </p>
           </div>
           <div className="py-8 flex justify-center">
-            <TimerView
-              isFocusTime={isFocusTime}
-              timeLeft={timeLeft}
-              currSessionDuration={currSessionDuration}
-            />
+            <TimerView timer={timer} />
           </div>
           <div className="flex items-center justify-center">
             <Controls
-              timerStarted={!isCompleted}
-              onStartTimer={startNewTimer}
-              toggleTimer={handleToggleTimer}
-              isPaused={isPaused}
-              onSkipSession={handleSkipSession}
-              onAbort={handleAbort}
+              timer={timer}
+              onStartNewTimer={startNewTimer}
+              onTimerAborted={onTimerAborted}
             />
           </div>
           <div className="flex-1 flex justify-end mt-5">
