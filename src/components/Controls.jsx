@@ -25,8 +25,10 @@ const Controls = ({ timer, onStartNewTimer, onTimerAborted }) => {
   };
 
   const handleAbort = () => {
-    timer?.abort();
-    onTimerAborted();
+    if (timer) {
+      timer.abort();
+      onTimerAborted();
+    }
   };
 
   return (

@@ -27,6 +27,24 @@ export const getFocusTimeOfOnDate = (dailyFocusTime, day) => {
   return result[0].focusTime ?? 0;
 };
 
+export const incrementFocusTime = (dailyFocusTime, todayInISO) => {
+  let updated = false;
+
+  const newDailyFocusTime = dailyFocusTime.map((entry) => {
+    if (entry.day === todayInISO) {
+      updated = true;
+      return { ...entry, focusTime: entry.focusTime + 1 }; // ✅ new object
+    }
+    return entry;
+  });
+
+  if (!updated) {
+    return [{ day: todayInISO, focusTime: 1 }, ...dailyFocusTime];
+  }
+
+  return newDailyFocusTime;
+};
+
 // Converts seconds in Hours with Decimal
 export const convertSecondsToHrs = (timeInSecs) => {
   const timeInHours = timeInSecs / 3600;

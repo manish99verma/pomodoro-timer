@@ -5,78 +5,73 @@ import TimerView from "./components/TimerView";
 import Controls from "./components/Controls";
 import StatsButton from "./components/StatsButton";
 import Timer from "./utils/Timer";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import TimerFinishedDialog from "./components/Dialog/TimerFinishedDialog";
-import { saveOnGoingTimer } from "./store/actions";
+import { incrementTodayFocusTime, saveOnGoingTimer } from "./store/actions";
+import { formatDateToISODate } from "./utils/timeUtils";
 
 const App = () => {
+  const savedTimer = useSelector((state) => state.onGoingTimer);
   const dispatch = useDispatch();
-  const savedTimerInfo = useSelector((state) => state.onGoingTimer);
   const darkMode = useSelector((state) => state.darkMode);
-  const [formattedTimerState, setFormattedTimerState] =
-    useState("Sessions 0/0");
   const [_, setUpdatesCount] = useState(0);
   const [timer, setTimer] = useState(null);
   const [congratulationDialogVisible, setCongratulationDialogVisible] =
     useState(false);
 
-  // updates
-  useEffect(() => {
-    if (!timer) return;
-    timer.onTimerUpdateListener(() => {
+  const updateViewFromTimer = useCallback(
+    (t) => {
       setUpdatesCount((c) => c + 1);
 
-      setFormattedTimerState(timer.formattedTimerState());
-
-      if (timer.isCompleted()) {
+      if (t.isCompleted()) {
         setCongratulationDialogVisible(true);
         setTimer(null);
       }
 
-      const serializedTimer = timer.getSerializedTimer();
+      const serializedTimer = t.getSerializedTimer();
       console.log("serialized timer obj: ", serializedTimer);
       dispatch(saveOnGoingTimer(serializedTimer));
-    });
-  }, [timer, dispatch]);
+
+      if (t.isFocusTime()) {
+        console.log("Incrementing today focus time");
+        const date = new Date();
+        const formattedDate = formatDateToISODate(date);
+        console.log("Formatted today: ", formattedDate);
+
+        dispatch(incrementTodayFocusTime(formattedDate));
+      }
+    },
+    [dispatch]
+  );
+
+  const startNewTimer = useCallback(
+    (preferences, startNow = true) => {
+      const t = new Timer(preferences);
+      if (startNow) {
+        t.start();
+        updateViewFromTimer(t);
+      }
+
+      t.onTimerUpdateListener(() => {
+        updateViewFromTimer(t);
+      });
+
+      setTimer(t);
+    },
+    [updateViewFromTimer]
+  );
 
   useEffect(() => {
-    console.log("Saved info: ", savedTimerInfo);
-    const t = new Timer(savedTimerInfo);
-    if (t.isCompleted() || t.isAborted) {
+    if (
+      !savedTimer ||
+      timer ||
+      savedTimer.isAborted ||
+      savedTimer.sessions === savedTimer.completedSessions
+    )
       return;
-    }
-
-    // resume timer from last session
-    setTimer(t);
-  }, [savedTimerInfo]);
-
-  const updateViewFromTimer = (t) => {
-    setUpdatesCount((c) => c + 1);
-
-    setFormattedTimerState(t.formattedTimerState());
-
-    if (t.isCompleted()) {
-      setCongratulationDialogVisible(true);
-      setTimer(null);
-    }
-
-    const serializedTimer = t.getSerializedTimer();
-    console.log("serialized timer obj: ", serializedTimer);
-    dispatch(saveOnGoingTimer(serializedTimer));
-  };
-
-  const startNewTimer = (preferences) => {
-    const t = new Timer(preferences);
-    t.start();
-
-    // updateViewFromTimer(t);
-
-    // t.onTimerUpdateListener(() => {
-    //   updateViewFromTimer(t);
-    // });
-
-    setTimer(t);
-  };
+    console.log("Saved state: ", savedTimer);
+    startNewTimer(savedTimer, false);
+  }, [savedTimer, startNewTimer, timer]);
 
   const onTimerAborted = () => {
     setTimer(null);
@@ -98,7 +93,9 @@ const App = () => {
             <Preferences />
           </div>
           <div className="flex flex-1 flex-col items-center">
-            <div className="opacity-95">{formattedTimerState}</div>
+            <div className="opacity-95">
+              {timer?.formattedTimerState() || "Session x/x"}
+            </div>
             <h2 className="pt-2 tracking-wider text-2xl font-medium">
               {timer?.label || "Unlabelled"}
             </h2>

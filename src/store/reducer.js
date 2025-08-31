@@ -1,5 +1,7 @@
+import { incrementFocusTime } from "../utils/timeUtils";
 import {
   ADD_LABEL,
+  INCREMENT_TODAY_FOCUS_TIME,
   SAVE_ON_GOING_TIMER,
   SAVE_TIMER_PREFERENCES,
   TOGGLE_SOUND,
@@ -30,18 +32,10 @@ const fallBackState = {
     completedBreaks: 0,
     completedLongBreaks: 0,
     onGoingTimerStateInSeconds: 0,
-    isAborted: false,
+    isAborted: true,
   },
   // {day: "YYYY-MM-DD", focusTime: timeInSeconds};
-  dailyFocusTime: [
-    { day: "2025-08-28", focusTime: 43593 },
-    { day: "2025-08-27", focusTime: 349 },
-    { day: "2025-08-26", focusTime: 543 },
-    { day: "2025-08-25", focusTime: 34 },
-    { day: "2025-08-24", focusTime: 133 },
-    { day: "2025-08-23", focusTime: 34 },
-    { day: "2025-08-22", focusTime: 132 },
-  ],
+  dailyFocusTime: [],
 };
 
 const currState = loadState("initialState", fallBackState);
@@ -71,6 +65,14 @@ const reducer = (state = currState, action) => {
     case SAVE_ON_GOING_TIMER: {
       return { ...state, onGoingTimer: action.payload };
     }
+    case INCREMENT_TODAY_FOCUS_TIME:
+      return {
+        ...state,
+        dailyFocusTime: incrementFocusTime(
+          state.dailyFocusTime,
+          action.payload
+        ),
+      };
     default:
       return state;
   }

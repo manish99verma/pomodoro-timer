@@ -12,7 +12,8 @@ class Timer {
     this.completedSessions = timerPreferences.completedSessions || 0;
     this.completedBreaks = timerPreferences.completedBreaks || 0;
     this.completedLongBreaks = timerPreferences.completedLongBreaks || 0;
-    this.onGoingTimerStateInSeconds = timerPreferences.onGoingTimerState || 0;
+    this.onGoingTimerStateInSeconds =
+      timerPreferences.onGoingTimerStateInSeconds || 0;
     this.isAborted = timerPreferences.isAborted || false;
   }
 
@@ -57,8 +58,11 @@ class Timer {
   }
 
   abort() {
+    console.log("Aborting timer");
+
     this.isAborted = true;
     this.stop();
+    this.callListeners();
   }
 
   start() {

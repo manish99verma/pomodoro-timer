@@ -1,5 +1,6 @@
 import {
   ADD_LABEL,
+  INCREMENT_TODAY_FOCUS_TIME,
   SAVE_ON_GOING_TIMER,
   SAVE_TIMER_PREFERENCES,
   TOGGLE_SOUND,
@@ -36,5 +37,12 @@ export const saveOnGoingTimer = (serializedTimerObj) => {
   return {
     type: SAVE_ON_GOING_TIMER,
     payload: serializedTimerObj,
+  };
+};
+
+export const incrementTodayFocusTime = (todayInISO) => {
+  return {
+    type: INCREMENT_TODAY_FOCUS_TIME,
+    payload: todayInISO,
   };
 };
