@@ -73,7 +73,7 @@ Feel free to fork, modify, and use in your own projects.
 ## 👨‍💻 Author
 
 **Manish Kumar Verma**  
-🔗 [GitHub](https://github.com/manish99verma) | 🌐 [Linkedin](www.linkedin.com/in/manish-kumar-verma-2278622a6)
+🔗 [GitHub](https://github.com/manish99verma) | 🌐 [Linkedin](https://www.linkedin.com/in/manish-kumar-verma-2278622a6)
 
 ---
 
