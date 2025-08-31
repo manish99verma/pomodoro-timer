@@ -39,6 +39,7 @@ This project was created as part of the **PW Skills Hackathon - Pomodoro Timer C
 - [Tailwind CSS](https://tailwindcss.com/) for modern styling
 - [React Icons](https://react-icons.github.io/react-icons/) for UI icons
 - [Fontsource](https://fontsource.org/) for typography
+- [Sounds](https://freesound.org/) for sounds
 - Deployment: [Vercel](https://vercel.com/)
 
 ---
