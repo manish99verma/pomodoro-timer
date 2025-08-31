@@ -10,9 +10,11 @@ const Controls = ({ timer, onStartNewTimer, onTimerAborted }) => {
     const handleKeyDown = (e) => {
       switch (e.key.toLowerCase()) {
         case " ": // Space → Start/Pause
-          e.preventDefault(); // prevent page scrolling
-          if (timer) handleToggle();
-          else setSettingsDialogOpened(true);
+          if (!settingsDialogOpened) {
+            e.preventDefault(); // prevent page scrolling
+            if (timer) handleToggle();
+            else setSettingsDialogOpened(true);
+          }
           break;
         case "a": // A -> Abort
           if (timer) handleAbort();
