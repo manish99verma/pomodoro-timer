@@ -3,7 +3,7 @@ import {
   convertSecondsToHrs,
   formatToClockTime,
   getFocusTimeOfOnDate,
-} from "../utils/timeUtils";
+} from "../utils/timeUtils.js";
 import { useSelector } from "react-redux";
 
 const TimeInfo = () => {

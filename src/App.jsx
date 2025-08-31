@@ -4,11 +4,11 @@ import Preferences from "./components/Preferences";
 import TimerView from "./components/TimerView";
 import Controls from "./components/Controls";
 import StatsButton from "./components/StatsButton";
-import Timer from "./utils/Timer";
+import Timer from "./utils/Timer.js";
 import { useCallback, useEffect, useState } from "react";
 import TimerFinishedDialog from "./components/Dialog/TimerFinishedDialog";
 import { incrementTodayFocusTime, saveOnGoingTimer } from "./store/actions";
-import { formatDateToISODate } from "./utils/timeUtils";
+import { formatDateToISODate } from "./utils/timeUtils.js";
 import Quote from "./components/Quote";
 
 const App = () => {

@@ -1,4 +1,4 @@
-import { incrementFocusTime } from "../utils/timeUtils";
+import { incrementFocusTime } from "../utils/timeUtils.js";
 import {
   ADD_LABEL,
   INCREMENT_TODAY_FOCUS_TIME,

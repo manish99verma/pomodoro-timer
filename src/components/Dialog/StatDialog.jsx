@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import BaseDialog from "./BaseDialog";
-import { convertToHoursMinutesSeconds } from "../../utils/timeUtils";
+import { convertToHoursMinutesSeconds } from "../../utils/timeUtils.js";
 import { useEffect, useState } from "react";
 
 const StatDialog = ({ onDismiss }) => {

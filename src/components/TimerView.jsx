@@ -1,5 +1,5 @@
 import { MdOutlineVisibility, MdCoffee } from "react-icons/md";
-import { formatTime, getPercentage } from "../utils/timeUtils";
+import { formatTime, getPercentage } from "../utils/timeUtils.js";
 
 const TimerView = ({ timer }) => {
   return (
