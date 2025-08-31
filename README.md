@@ -5,6 +5,12 @@ This project was created as part of the **PW Skills Hackathon - Pomodoro Timer C
 
 ---
 
+## 📱Screenshots
+
+<img src="./screenshots/screenshot-1.png" alt="QR Code" width="45%"/> <img src="./screenshots/screenshot-2.png" alt="QR Code" width="45%"/> <img src="./screenshots/screenshot-3.png" alt="QR Code" width="45%"/> <img src="./screenshots/screenshot-4.png" alt="QR Code" width="45%"/>
+
+---
+
 ## 🚀 Features
 
 - ⏱️ **Pomodoro Timer** with Work, Short Break, and Long Break sessions
@@ -34,13 +40,6 @@ This project was created as part of the **PW Skills Hackathon - Pomodoro Timer C
 - [React Icons](https://react-icons.github.io/react-icons/) for UI icons
 - [Fontsource](https://fontsource.org/) for typography
 - Deployment: [Vercel](https://vercel.com/)
-
----
-
-## 📸 Demo
-
-- **Live App**: [Vercel Deployment Link](https://your-vercel-link.vercel.app/)
-- **Repository**: [GitHub Repo Link](https://github.com/your-username/your-repo)
 
 ---
 
