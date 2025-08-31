@@ -4,7 +4,7 @@ import Preferences from "./components/Preferences";
 import TimerView from "./components/TimerView";
 import Controls from "./components/Controls";
 import StatsButton from "./components/StatsButton";
-import Timer from "./utils/Timer.js";
+import Timer from "./utils/timer.js";
 import { useCallback, useEffect, useState } from "react";
 import TimerFinishedDialog from "./components/Dialog/TimerFinishedDialog";
 import { incrementTodayFocusTime, saveOnGoingTimer } from "./store/actions";
