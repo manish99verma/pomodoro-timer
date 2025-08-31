@@ -1,6 +1,8 @@
 class Timer {
   currJobId;
-  updateListeners = []; // fn(isRunning, isCompleted, onGoingTimerStateInSeconds, currSessionDurationInSeconds)
+  updateListeners = [];
+  audio = new Audio("/clock-tic.wav");
+  isSoundEnabled = false;
 
   constructor(timerPreferences) {
     this.work = timerPreferences.work || 25;
@@ -39,27 +41,22 @@ class Timer {
 
   callListeners() {
     this.updateListeners.forEach((listener) => {
-      listener(
-        Boolean(this.currJobId),
-        this.isCompleted(),
-        this.onGoingTimerStateInSeconds,
-        this.getCurrentJobDurationInSeconds()
-      );
+      listener();
     });
   }
 
   skipSession() {
-    console.log("Skipping session!");
-
     this.onGoingTimerStateInSeconds = this.getCurrentJobDurationInSeconds();
     if (!this.isRunning()) {
       this.start();
     }
   }
 
-  abort() {
-    console.log("Aborting timer");
+  setSoundEnabled(value) {
+    this.isSoundEnabled = value;
+  }
 
+  abort() {
     this.isAborted = true;
     this.stop();
     this.callListeners();
@@ -94,11 +91,13 @@ class Timer {
 
       this.callListeners();
 
-      // Todo: Save to local storage
-      console.log(
-        `Timer: ${this.currJobId}: `,
-        this.onGoingTimerStateInSeconds
-      );
+      // Play sound
+      if (
+        this.isSoundEnabled &&
+        this.getCurrentSessionTimeLeftInSeconds() < 10
+      ) {
+        this.audio.play();
+      }
     }, 1000);
 
     this.callListeners();

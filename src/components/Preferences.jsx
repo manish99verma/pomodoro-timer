@@ -27,9 +27,9 @@ const Preferences = () => {
         onClick={() => dispatch(toggleSound())}
       >
         {soundEnabled ? (
-          <MdVolumeOff className="w-6 h-6" />
-        ) : (
           <MdVolumeUp className="w-6 h-6" />
+        ) : (
+          <MdVolumeOff className="w-6 h-6" />
         )}
       </Button>
     </div>

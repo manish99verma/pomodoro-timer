@@ -9,15 +9,21 @@ import { useCallback, useEffect, useState } from "react";
 import TimerFinishedDialog from "./components/Dialog/TimerFinishedDialog";
 import { incrementTodayFocusTime, saveOnGoingTimer } from "./store/actions";
 import { formatDateToISODate } from "./utils/timeUtils";
+import Quote from "./components/Quote";
 
 const App = () => {
+  const isSoundEnabled = useSelector((state) => state.soundEnabled);
+  const darkMode = useSelector((state) => state.darkMode);
   const savedTimer = useSelector((state) => state.onGoingTimer);
   const dispatch = useDispatch();
-  const darkMode = useSelector((state) => state.darkMode);
   const [_, setUpdatesCount] = useState(0);
   const [timer, setTimer] = useState(null);
   const [congratulationDialogVisible, setCongratulationDialogVisible] =
     useState(false);
+
+  useEffect(() => {
+    timer?.setSoundEnabled(isSoundEnabled);
+  }, [isSoundEnabled, timer]);
 
   const updateViewFromTimer = useCallback(
     (t) => {
@@ -29,14 +35,11 @@ const App = () => {
       }
 
       const serializedTimer = t.getSerializedTimer();
-      console.log("serialized timer obj: ", serializedTimer);
       dispatch(saveOnGoingTimer(serializedTimer));
 
       if (t.isFocusTime()) {
-        console.log("Incrementing today focus time");
         const date = new Date();
         const formattedDate = formatDateToISODate(date);
-        console.log("Formatted today: ", formattedDate);
 
         dispatch(incrementTodayFocusTime(formattedDate));
       }
@@ -69,7 +72,6 @@ const App = () => {
       savedTimer.sessions === savedTimer.completedSessions
     )
       return;
-    console.log("Saved state: ", savedTimer);
     startNewTimer(savedTimer, false);
   }, [savedTimer, startNewTimer, timer]);
 
@@ -99,9 +101,7 @@ const App = () => {
             <h2 className="pt-2 tracking-wider text-2xl font-medium">
               {timer?.label || "Unlabelled"}
             </h2>
-            <p className="text-sm opacity-95">
-              Stay hydrated. Drink some water.
-            </p>
+            <Quote isFocusTime={timer?.isFocusTime() || false} />
           </div>
           <div className="py-8 flex justify-center">
             <TimerView timer={timer} />
