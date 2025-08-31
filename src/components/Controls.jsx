@@ -1,9 +1,33 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "./Button";
 import SettingsDialog from "./Dialog/SettingsDialog";
 
 const Controls = ({ timer, onStartNewTimer, onTimerAborted }) => {
   const [settingsDialogOpened, setSettingsDialogOpened] = useState(false);
+
+  // Keyword controls
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      switch (e.key.toLowerCase()) {
+        case " ": // Space → Start/Pause
+          e.preventDefault(); // prevent page scrolling
+          if (timer) handleToggle();
+          else setSettingsDialogOpened(true);
+          break;
+        case "a": // A -> Abort
+          if (timer) handleAbort();
+          break;
+        case "s": // S → Skip
+          if (timer) handleSkipSession();
+          break;
+        default:
+          break;
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  });
 
   const handleSkipSession = () => {
     timer?.skipSession();
