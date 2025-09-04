@@ -8,7 +8,7 @@ class Timer {
     this.work = timerPreferences.work || 25;
     this.break = timerPreferences.break || 5;
     this.sessions = timerPreferences.sessions || 5;
-    this.longBreakOnSessions = timerPreferences.longBreakOnSessions || 2;
+    this.longBreakOnSessions = timerPreferences.longBreakOnSessions ?? 2;
     this.longBreakDuration = timerPreferences.longBreakDuration || 15;
     this.label = timerPreferences.label || "Unlabelled";
     this.completedSessions = timerPreferences.completedSessions || 0;
@@ -17,6 +17,8 @@ class Timer {
     this.onGoingTimerStateInSeconds =
       timerPreferences.onGoingTimerStateInSeconds || 0;
     this.isAborted = timerPreferences.isAborted || false;
+
+    console.log("Long break on sessions: ", this.longBreakOnSessions);
   }
 
   getSerializedTimer() {
@@ -146,6 +148,7 @@ class Timer {
   }
 
   isLongBreak() {
+    if (this.longBreakOnSessions === 0) return false;
     return this.completedSessions % this.longBreakOnSessions === 0;
   }
 

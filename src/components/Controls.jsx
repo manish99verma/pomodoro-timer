@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Button from "./Button";
 import SettingsDialog from "./Dialog/SettingsDialog";
+import { toast } from "react-toastify";
 
 const Controls = ({ timer, onStartNewTimer, onTimerAborted }) => {
   const [settingsDialogOpened, setSettingsDialogOpened] = useState(false);
@@ -32,6 +33,7 @@ const Controls = ({ timer, onStartNewTimer, onTimerAborted }) => {
   });
 
   const handleSkipSession = () => {
+    toast.info("Session skipped!");
     timer?.skipSession();
   };
 
@@ -54,6 +56,7 @@ const Controls = ({ timer, onStartNewTimer, onTimerAborted }) => {
     if (timer) {
       timer.abort();
       onTimerAborted();
+      toast.info("Timer Aborted!");
     }
   };
 

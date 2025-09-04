@@ -10,6 +10,7 @@ import TimerFinishedDialog from "./components/Dialog/TimerFinishedDialog";
 import { incrementTodayFocusTime, saveOnGoingTimer } from "./store/actions";
 import { formatDateToISODate } from "./utils/timeUtils.js";
 import Quote from "./components/Quote";
+import { Bounce, ToastContainer } from "react-toastify";
 
 const App = () => {
   const isSoundEnabled = useSelector((state) => state.soundEnabled);
@@ -49,6 +50,8 @@ const App = () => {
 
   const startNewTimer = useCallback(
     (preferences, startNow = true) => {
+      console.log("New preferences: ", preferences);
+
       const t = new Timer(preferences);
       if (startNow) {
         t.start();
@@ -123,6 +126,19 @@ const App = () => {
           onDismiss={() => setCongratulationDialogVisible(false)}
         />
       )}
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss={false}
+        draggable
+        pauseOnHover
+        theme={darkMode ? "dark" : "light"}
+        transition={Bounce}
+      />
     </>
   );
 };
